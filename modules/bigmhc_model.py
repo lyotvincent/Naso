@@ -8,7 +8,9 @@ import torch
 import csv
 import sys
 
-sys.path.append('bigmhc/src')
+script_dir = os.path.dirname(os.path.realpath(__file__))
+sys.path.append(script_dir + '/bigmhc/src')
+
 import cli, predict
 
 
@@ -36,11 +38,10 @@ def bigmhc_el_modelsetup():
     torch.backends.cudnn.deterministic = True
     torch.backends.cudnn.benchmark = False
 
-    parser = argparse.ArgumentParser()
-    args = parser.parse_args()
-    args.models = 'bigmhc/models/bat512' + ':' + 'bigmhc/models/bat1024' + ':' + 'bigmhc/models/bat2048' + ':' + 'bigmhc/models/bat4096' + ':' + 'bigmhc/models/bat8192' + ':' + 'bigmhc/models/bat16384' + ':' + 'bigmhc/models/bat32768'
+    args = argparse.Namespace()
+    args.models = 'modules/bigmhc/models/bat512' + ':' + 'modules/bigmhc/models/bat1024' + ':' + 'modules/bigmhc/models/bat2048' + ':' + 'modules/bigmhc/models/bat4096' + ':' + 'modules/bigmhc/models/bat8192' + ':' + 'modules/bigmhc/models/bat16384' + ':' + 'modules/bigmhc/models/bat32768'
     args.out = None
-    args.pseudoseqs = 'bigmhc/data/pseudoseqs.csv'
+    args.pseudoseqs = 'modules/bigmhc/data/pseudoseqs.csv'
     args.devices = 'all'
     args.verbose = False
     args.maxbat = 1
@@ -81,11 +82,10 @@ def bigmhc_im_modelsetup():
     torch.backends.cudnn.deterministic = True
     torch.backends.cudnn.benchmark = False
 
-    parser = argparse.ArgumentParser()
-    args = parser.parse_args()
-    args.models = 'bigmhc/models/bat512/im' + ':' + 'bigmhc/models/bat1024/im' + ':' + 'bigmhc/models/bat2048/im' + ':' + 'bigmhc/models/bat4096/im' + ':' + 'bigmhc/models/bat8192/im' + ':' + 'bigmhc/models/bat16384/im' + ':' + 'bigmhc/models/bat32768/im'
+    args = argparse.Namespace()
+    args.models = 'modules/bigmhc/models/bat512/im' + ':' + 'modules/bigmhc/models/bat1024/im' + ':' + 'modules/bigmhc/models/bat2048/im' + ':' + 'modules/bigmhc/models/bat4096/im' + ':' + 'modules/bigmhc/models/bat8192/im' + ':' + 'modules/bigmhc/models/bat16384/im' + ':' + 'modules/bigmhc/models/bat32768/im'
     args.out = None
-    args.pseudoseqs = 'bigmhc/data/pseudoseqs.csv'
+    args.pseudoseqs = 'modules/bigmhc/data/pseudoseqs.csv'
     args.devices = 'all'
     args.verbose = False
     args.maxbat = 1

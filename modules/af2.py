@@ -34,7 +34,7 @@ def setup_models(neo_num, model_id=3, recycles=3, msa_clusters=1):
     model_config.data.eval.max_msa_clusters = msa_clusters # AF2 default is 512. Turning off is about 8x faster.
     model_config.data.eval.num_ensemble = 1
     
-    model_params = data.get_model_haiku_params(model_name=model_name, data_dir='af2_models')
+    model_params = data.get_model_haiku_params(model_name=model_name, data_dir=script_dir + '/af2_models')
     model_runner = model.RunModel(model_config, model_params)
 
 

@@ -111,31 +111,29 @@ class Neoantigen:
         self.current_loss = float(self.try_loss)
 
 
-def hallucinate_neoantigen(set_neoantigens, set_outputs, model_runners):
+def hallucinate_neoantigen(args, set_neoantigens, set_outputs, model_runners):
     outputs = set_outputs
-    mutation_rate = '3-1'
-    positions_select = 'random'
-    positions_fix = True
-    positions_mask = 'custom'
-    mutation_mask = True
-    seed = 42
-
-    mutation_steps = 1000
-
-    mutation_tolerance = None
-    mutation_loss = [('dual', None), ('bigmhc_el', None), ('bigmhc_im', None)]
-    loss_weights = [1.0, 1.0, 2.0]
-    T_init = 0.01
-    half_life = 500
-    mutation_method = 'uniform'
+    mutation_rate = args.mutation_rate
+    positions_select = args.select_positions
+    positions_fix = args.positions_fix
+    positions_mask = args.positions_mask
+    mutation_mask = args.mutation_mask
+    seed = args.seed
+    mutation_steps = args.steps
+    mutation_tolerance = args.tolerance
+    mutation_loss = args.loss
+    loss_weights = args.loss_weights
+    T_init = args.T_init
+    half_life = args.half_life
+    mutation_method = args.mutation_method
+    to_amber_relax = args.amber_relax
     neo_weights = []
-    to_amber_relax = 1
 
     os.makedirs(f'{outputs}_models', exist_ok=True)
 
     # Only one neoantigen can be processed at a time.
     assert len(set_neoantigens) == 1
-    temp_pair = set_neoantigens[0]
+    temp_pair = list(set_neoantigens[0])
     temp_pair[0] = temp_pair[0].upper()
     for o in temp_pair[0]:
         # Check if the neoantigen sequence is valid.
@@ -143,10 +141,10 @@ def hallucinate_neoantigen(set_neoantigens, set_outputs, model_runners):
             print(f'Invalid neoantigen sequence:{temp_pair[0]}')
             return
     neoantigens = []
-    if mutation_mask == True:
-        neoantigen = Neoantigen(neo_sequence=temp_pair[0], paired_hla=temp_pair[1], mutation_index=temp_pair[2])
+    if mutation_mask == True and len(temp_pair) == 3:
+        neoantigen = Neoantigen(neo_sequence=temp_pair[0], paired_hla=temp_pair[1], mutation_index=temp_pair[2], position_weights=args.position_weights)
     else:
-        neoantigen = Neoantigen(neo_sequence=temp_pair[0], paired_hla=temp_pair[1], mutation_index=None)
+        neoantigen = Neoantigen(neo_sequence=temp_pair[0], paired_hla=temp_pair[1], mutation_index=None, position_weights=args.position_weights)
     neoantigens.append(neoantigen)
     if positions_fix == True:
         for i in range(len(neoantigens)):
@@ -319,7 +317,9 @@ def hallucinate_neoantigen(set_neoantigens, set_outputs, model_runners):
 
 
 if __name__ == '__main__':
-    input_data = 'datasets/tsnadb_data.txt'
+    args = get_args()
+
+    input_data = args.input
     raw_peptide_sequences = []
     with open(input_data, 'r') as f:
         lines = f.readlines()
@@ -330,19 +330,18 @@ if __name__ == '__main__':
     folder_index = 0
 
     # Setup AlphaFold2 models.
-    model_id = 3
-    model_recycles = 3
-    model_msa_clusters = 1
+    model_id = args.model
+    model_recycles = args.recycles
+    model_msa_clusters = args.msa_clusters
     model_runners = setup_models(1, model_id=model_id, recycles=model_recycles, msa_clusters=model_msa_clusters)
 
     while raw_peptide_sequences != []:
         temp_peptide_sequences = []
         temp_peptide_sequences.append(raw_peptide_sequences[0])
-        hallucinate_neoantigen(temp_peptide_sequences, f'outputs/{str(folder_index).zfill(5)}', model_runners)
+        hallucinate_neoantigen(args=args, set_neoantigens=temp_peptide_sequences, set_outputs=f'{args.output}/{str(folder_index).zfill(5)}', model_runners=model_runners)
         folder_index = folder_index + 1
         del raw_peptide_sequences[:1]
         np_raw_peptide_sequences = np.asarray(raw_peptide_sequences)
-        np.savetxt(f'outputs/{str(folder_index).zfill(5)}_rest.txt', np_raw_peptide_sequences, fmt = '%s', delimiter = ',')
+        np.savetxt(f'{args.output}/{str(folder_index).zfill(5)}_rest.txt', np_raw_peptide_sequences, fmt = '%s', delimiter = ',')
     
     print('all are processed')
-    

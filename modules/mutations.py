@@ -91,7 +91,7 @@ def select_positions(n_mutations, neo_object, positions_select, select_position_
             neo_object.ref_mutable_positions = mutable_positions
 
 
-    elif select_positions == 'plddt':
+    elif positions_select == 'plddt':
         # TODO
         # Choose positions based on lowest plddt.
         # First/last three positions of each neoantigen are choice frequency adjusted to avoid picking N/C term every time (they tend to score much lower).
@@ -122,7 +122,7 @@ def select_positions(n_mutations, neo_object, positions_select, select_position_
         mutable_positions = sites
 
 
-    elif '.af2h' in select_positions:
+    elif '.af2h' in positions_select:
         # TODO
         # Choice of neoantigen positions to mutate is based on weights provided in .af2h file.
         # If plddt parameter is given (as .af2h::0.xx), select worst pLDDT scoring quantile among user-specified positions.

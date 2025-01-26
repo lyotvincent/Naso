@@ -15,7 +15,8 @@ import subprocess
 from scipy import linalg
 from jax.nn import softmax
 
-from bigmhc import *
+sys.path.append(script_dir)
+from bigmhc_model import *
 
 
 el_args, el_models = bigmhc_el_modelsetup()
