@@ -21,10 +21,12 @@ cd Naso/
 ```
 
 ### 3. Run Naso.
+The raw data used in the paper are collected from [TSNAdb](http://biopharm.zju.edu.cn/tsnadb/), [NEPdb](http://nep.whu.edu.cn/) and [dbPepNeo](http://www.biostatistics.online/dbPepNeo/). The data files containing the neoantigens and their corresponding HLAs are in the `datasets` folder. Each line contains one raw neoantigen and the corresponding HLA, separated by a tab. More details about the raw data can be found in the paper.
+
 Example:
 
 ```shell
-python neoantigen_optimization.py --input datasets/nepdb_data.txt --output outputs
+python neoantigen_optimization.py --input datasets/NEPdb.txt --output outputs
 ```
 
 ## Outputs
